@@ -1,0 +1,54 @@
+<html>
+
+<head>
+    <title> login </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <link href="/stylesheets/loginPage.css" rel="stylesheet">
+    <style>
+        input {
+            width: 45px;
+            margin: 4px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: lightgray
+        }
+        form {
+            all: initial;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div>
+            <div class="overlay">
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, <%= name %>
+                    </h1>
+                    <p>Welcome to our chat app. <br>
+                        <strong> Please enter the 6-digit verification code we sent via SMS: </strong>
+                    </p>
+
+                    <form method="POST" id="form" action="/verify-number">
+                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
+                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
+                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
+                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
+                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
+                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
+                        <br>
+                        <button type="submit" class="ghost">Verify</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/scripts/verify-number.js"></script>
+</body>
+
+</html>

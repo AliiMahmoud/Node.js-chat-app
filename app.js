@@ -1,6 +1,9 @@
+// Loading env variables
+require("dotenv").config();
 // Dependancies
 const express = require('express')
 const path = require('path')
+const bodyParser = require('body-parser')
 const errorHandler = require('./src/middlewares/error-handler')
 const router = require('./src/routers/index')
 const morgan = require('morgan')
@@ -12,6 +15,7 @@ const app = express()
 app.set('view engine', 'ejs')
 
 // Middle-wares 
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(morgan('dev'))
 app.use(router);

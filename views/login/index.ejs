@@ -1,0 +1,81 @@
+<html>
+
+<head>
+    <title> login </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <link href="/stylesheets/loginPage.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="alert alert-error" style="display: <%= typeof(error) === 'undefined' ? 'none' : '' %> ">
+        <%= typeof(error)==='undefined' ? '' : error %>
+    </div>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form method="POST" action="/signup" onsubmit="return submitRegister()">
+                <h1>Create Account</h1>
+                <input name="name" type="text" placeholder="Name" required />
+                <div class="tele"><input name="phone" class="phone" type="tel" placeholder="phone" required /></div>
+                <input name="password" type="password" placeholder="Password" required />
+                
+                <div id ='signup-loading-dots' class="dot-floating" style="display: none;"></div>
+                <button type="submit"> Sign Up</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form method="post" action="/login" onsubmit="return submitLogin()">
+                <h1>Login </h1>
+                <div class="tele"><input name="phone" class="phone" type="tel" placeholder="phone" required /></div>
+                <input name="password" type="password" placeholder="Password" required />
+                <a href="#">Forgot your password?</a>
+
+                <div id ='login-loading-dots' class="dot-floating" style="display: none;"></div>
+
+                <button>Login </button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>To keep connected with us please login with your personal info</p>
+                    <button class="ghost" id="signIn">Login </button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Enter your personal details and start chatting</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/scripts/loginPage.js"></script>
+    <script>
+        const phoneInputField = document.getElementsByClassName("phone");
+        for (var i = 0; i < phoneInputField.length; i++) {
+            const phoneInput = window.intlTelInput(phoneInputField[i], {
+                preferredCountries: ["eg"],
+                separateDialCode: true,
+                hiddenInput: "phoneFull",
+                utilsScript:
+                    "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+            });
+        }
+        let dot1 = document.getElementById('login-loading-dots')
+        let dot2 = document.getElementById('signup-loading-dots')
+        function submitLogin() {
+            dot1.style.display = ""
+            // Form validation
+            return true
+        }
+        function submitRegister() {
+            dot2.style.display = ""
+            // Form validation
+            return true
+        }
+    </script>
+</body>
+
+</html>

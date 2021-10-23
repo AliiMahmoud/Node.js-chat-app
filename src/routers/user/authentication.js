@@ -3,15 +3,18 @@ const userController = require('../../controllers/user')
 
 const loginRouter = express.Router()
 
-// Login page 
-loginRouter.get("/login", (req, res) => { res.status(200).json() })
 // Login submit
 loginRouter.post("/login", userController.login)
+loginRouter.get("/login", (req, res) => res.redirect('/'))
 
-// Sign-up page 
-loginRouter.get("/signup", (req, res) => { res.status(200).json() })
 // Sign-up sumbition
 loginRouter.post("/signup", userController.register)
+loginRouter.get("/signup", (req, res) => res.redirect('/'))
+
+loginRouter.post("/verify-number", userController.verify)
+
+// home - after successful login
+loginRouter.get("/home", (req, res) => res.end())
 
 
 // Exporting the main loginRouter
