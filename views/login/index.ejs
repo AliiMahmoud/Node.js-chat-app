@@ -15,8 +15,8 @@
         <div class="form-container sign-up-container">
             <form method="POST" action="/signup" onsubmit="return submitRegister()">
                 <h1>Create Account</h1>
-                <input name="name" type="text" placeholder="Name" required />
-                <div class="tele"><input name="phone" class="phone" type="tel" placeholder="phone" required /></div>
+                <input name="name" type="text" placeholder="Full Name" required />
+                <div class="tele"><input id="phone-sign-up"  name="phone" class="phone" type="tel" placeholder="phone" required /></div>
                 <input name="password" type="password" placeholder="Password" required />
                 
                 <div id ='signup-loading-dots' class="dot-floating" style="display: none;"></div>
@@ -26,7 +26,7 @@
         <div class="form-container sign-in-container">
             <form method="post" action="/login" onsubmit="return submitLogin()">
                 <h1>Login </h1>
-                <div class="tele"><input name="phone" class="phone" type="tel" placeholder="phone" required /></div>
+                <div class="tele"><input id="phone-login" name="phone" class="phone" type="tel" placeholder="phone" required /></div>
                 <input name="password" type="password" placeholder="Password" required />
                 <a href="#">Forgot your password?</a>
 

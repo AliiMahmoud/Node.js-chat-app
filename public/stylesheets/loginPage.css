@@ -12,8 +12,8 @@ body {
 	align-items: center;
 	flex-direction: column;
 	font-family: 'Montserrat', sans-serif;
-	height: 100vh;
-	margin: -20px 0 50px;
+	height: 100%;
+	margin: 0;
 }
 
 h1 {
@@ -46,8 +46,8 @@ a {
 
 button {
 	border-radius: 20px;
-	border: 1px solid #FF4B2B;
-	background-color: #FF4B2B;
+	border: 1px solid #955070;
+	background-color: #955070;
 	color: #FFFFFF;
 	font-size: 12px;
 	font-weight: bold;
@@ -161,8 +161,10 @@ input {
 
 .overlay {
 	background: #FF416C;
-	background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
-	background: linear-gradient(to right, #FF4B2B, #FF416C);
+	/* background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C); */
+	background: -webkit-linear-gradient(to left, #c53447, #263d7cbd);
+	background: linear-gradient(to left, #c53447, #263d7cbd);
+	/* background: linear-gradient(to right, #FF4B2B, #FF416C); */
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 0 0;
@@ -243,7 +245,7 @@ input {
   color: #a94442;
   background-color: #f2dede;
   border-color: #ebccd1;
-  margin: 20px;
+  margin: 0 0 10 0;
 }
 
 .tele {
@@ -339,8 +341,7 @@ input {
 	
 
   footer {
-    background-color: #222;
-    color: #fff;
+    color: rgb(194, 194, 194);
     font-size: 14px;
     bottom: 0;
     position: fixed;
@@ -359,6 +360,6 @@ footer i {
 }
 
 footer a {
-    color: #3c97bf;
+    color: #9ed2e9;
     text-decoration: none;
 }

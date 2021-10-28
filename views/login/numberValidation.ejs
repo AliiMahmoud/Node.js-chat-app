@@ -7,14 +7,25 @@
     <link href="/stylesheets/loginPage.css" rel="stylesheet">
     <style>
         input {
-            width: 45px;
-            margin: 4px;
-            margin-bottom: 20px;
+
+            text-align: center;
+            border-radius: 6px;
+            width: 65%;
+            margin: 0;
+            font-weight: 800;
+            letter-spacing: 9px;
+            font-size: 17px;
+            color: #4c4c4c;
+        }
+
+        .div {
+            width: 330px;
         }
 
         h1 {
             color: lightgray
         }
+
         form {
             all: initial;
             text-align: center;
@@ -23,6 +34,8 @@
 </head>
 
 <body>
+    <div id="error-block">
+    </div>
     <div class="container">
         <div>
             <div class="overlay">
@@ -33,16 +46,23 @@
                         <strong> Please enter the 6-digit verification code we sent via SMS: </strong>
                     </p>
 
-                    <form method="POST" id="form" action="/verify-number">
-                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
-                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
-                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
-                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
-                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
-                        <input name="code" type="text" maxLength="1" size="1" min="0" max="9" required />
+                    <form id="form" action="/home" onsubmit="return verifyCode()">
+                        <div class="div">
+                            <input name="code" id="code" type="text" required autocomplete="off"  maxlength="6" minlength="6" />
+                        </div>
                         <br>
-                        <button type="submit" class="ghost">Verify</button>
+                        <button type="button" style="float: left;" onclick="window.location.replace('/')"
+                            class="ghost">Cancel</button>
+                        <button id="verify-btn" type="submit" style="float: right;" class="ghost">Verify</button>
                     </form>
+                    <div style="margin: 25px;">
+                        Didn't receive the code?
+                        <a id="send-again" href="#" style="color:rgb(0, 0, 0); text-decoration: underline">Send again
+                        </a>
+                        <span id="countdowntimer" style="margin-left: 5px;"> 20 sec</span>
+                    </div>
+
+
 
                 </div>
             </div>
