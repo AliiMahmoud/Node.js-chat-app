@@ -1,10 +1,10 @@
-# optimization
+# Optimization
 	- Server Load Balancer [Socket]
 	- sql query optimization [getting friends]
 	- Redis
 	- browser store
 
-# security 
+# Security 
 	- Handle delete requets outside cancel requests for security verifications
 	- delete the DOM id
 	- migration : private ID & public ID 
