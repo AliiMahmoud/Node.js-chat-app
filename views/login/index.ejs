@@ -2,8 +2,8 @@
 
 <head>
     <title> login </title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/intlTelInput.css" />
+    <script src="/scripts/intl-tel-input-min.js"></script>
     <link href="/stylesheets/loginPage.css" rel="stylesheet">
 </head>
 
@@ -16,21 +16,23 @@
             <form method="POST" action="/signup" onsubmit="return submitRegister()">
                 <h1>Create Account</h1>
                 <input name="name" type="text" placeholder="Full Name" required />
-                <div class="tele"><input id="phone-sign-up"  name="phone" class="phone" type="tel" placeholder="phone" required /></div>
+                <div class="tele"><input id="phone-sign-up" name="phone" class="phone" type="tel" placeholder="phone"
+                        required /></div>
                 <input name="password" type="password" placeholder="Password" required />
-                
-                <div id ='signup-loading-dots' class="dot-floating" style="display: none;"></div>
+
+                <div id='signup-loading-dots' class="dot-floating" style="display: none;"></div>
                 <button type="submit"> Sign Up</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
             <form method="post" action="/login" onsubmit="return submitLogin()">
                 <h1>Login </h1>
-                <div class="tele"><input id="phone-login" name="phone" class="phone" type="tel" placeholder="phone" required /></div>
+                <div class="tele"><input id="phone-login" name="phone" class="phone" type="tel" placeholder="phone"
+                        required /></div>
                 <input name="password" type="password" placeholder="Password" required />
                 <a href="#">Forgot your password?</a>
 
-                <div id ='login-loading-dots' class="dot-floating" style="display: none;"></div>
+                <div id='login-loading-dots' class="dot-floating" style="display: none;"></div>
 
                 <button>Login </button>
             </form>
@@ -52,7 +54,7 @@
     </div>
 
 
-    
+
     <footer>
         <p>
             Created with Love by
@@ -69,7 +71,7 @@
                 separateDialCode: true,
                 hiddenInput: "phoneFull",
                 utilsScript:
-                    "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                    "/scripts/intl-tel-input-utils.js",
             });
         }
         let dot1 = document.getElementById('login-loading-dots')

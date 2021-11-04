@@ -17,3 +17,6 @@ pids
 # npm cache directory
 .npm
 .idea
+
+# private todo
+todo

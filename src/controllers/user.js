@@ -1,122 +1,111 @@
 const userModel = require('../models/user')
-const smsSender = require('../../sms-verify')
+const friendshipModel = require('../models/friendship')
 
-var session = {}
 /**
- * Function to add a registered user into DB 
- * after validation
- * @param req - express Request handler Object
- * @param res - express Response Object
+ * Middleware Function to handle requesting the home page
+ * @summary if the user is authenticated it renders home page if not redirect
+ *  the user to login
+ * @param {import('express').Request} req - express Request handler Object
+ * @param {import('express').Response} res - express Response Object
  */
-module.exports.register = async function (req, res) {
-    // TODO session ?? 
-    // if session redirect -> home
-    let { name, phoneFull, password } = req.body
-    isValid = await smsSender.validateNumber(phoneFull)
-    if (isValid) {
-        // Inserting the user in the database
-        userModel.insertUser(name, phoneFull, password)
-            .then((data) => {
-                if (data) {
-                    session['userPhone'] = phoneFull
-                    session['name'] = name
-                    smsSender.sendSMS(phoneFull)
-                    res.render('login/numberValidation', { name: name })
-                }
-                else
-                    res.render('login/index', { error: 'Something went Wrong, try again' })
-            })
-            .catch((err) => {
-                res.render('login/index', { error: 'Number Already Exists' })
-            })
-    }
-    else
-        res.render('login/index', { error: 'Invalid Phone Number' })
+module.exports.home = async function (req, res) {
+    if (!req.session.uid) { res.redirect('/'); return; }
+    // Authenticated
+    let requests = await friendshipModel.getUserFriendRequests(req.session.uid)
+    res.render('home', { requests })
+}
+
+/**
+ * Function for getting user's friends
+ * @param {String} number - user's number(ID)
+ * @returns {Promise<Array>} Friends : array of Objects
+ */
+module.exports.getUserFriends = async function (number) {
+    // Getting friends from database
+    let friends = await friendshipModel.getFriends(number)
+    return friends
 }
 
 
 /**
- * Function to login a user 
- * checks the database then check 2FA SMS using twilio
- * @param req - express Request handler Object
- * @param res - express Response Object
+ * Function for searching for a user by his number
+ * @param {String} number - user's number(ID)
+ * @returns {Promise<{}>} user : Objects
  */
-module.exports.login = function (req, res) {
-    // if session redirect -> home 403
-    var { phoneFull, password } = req.body
-    // Getting user from database
-    userModel.getUser(phoneFull, password)
-        .then((data) => {
-            if (data) {
-                // TODO change
-                session['userPhone'] = phoneFull
-                session['name'] = data.name
-                res.render('login/numberValidation', { name: data.name })
-                smsSender.sendSMS(phoneFull).then((_v) => console.log(_v)).catch((err) => console.log(err.message))
-            }
-            else
-                res.render('login/index', { error: 'Invalid Credentials' })
-        })
-        .catch((_err) => {
-            res.render('login/index', { error: 'Invalid Credentials' })
-        })
+module.exports.searchForUser = async function (myNumber, number) {
+    // Getting friends from database
+    let user = await userModel.getUserInfoByNumber(number)
+
+    // Getting request info if exists
+    if (user) {
+        // Searching for myself
+        if (user.number == myNumber)
+            return { user, status: -2, sent: null }
+
+        // seching for person i already sent him a request or a friend
+        let sentRequest = await friendshipModel.getRequest(myNumber, number)
+        if (sentRequest)
+            return { user, status: sentRequest.status, sent: true }
+
+        // seching for person i in my request list or a friend
+        let recievedRequest = await friendshipModel.getRequest(number, myNumber)
+        if (recievedRequest)
+            return { user, status: recievedRequest.status, sent: false }
+
+        // Not a friend
+        return { user, status: -1, sent: null }
+    }
+    return null
+}
+
+/**
+ * Function accept user's friendship request
+ * @param {import('express').Request} req - express Request handler Object
+ * @param {import('express').Response} res - express Response Object
+ * @returns
+ */
+module.exports.acceptRequest = async function (req, res) {
+    if (!req.session.uid) { res.redirect('/'); return }
+    // authenticated
+    // TODO check
+    let sender = req.session.uid
+    let reciever = req.params.reciever
+    await friendshipModel.updateRequestStatus(sender, reciever)
+    res.redirect('/home')
 }
 
 
 /**
- * Function to verify user's SMS code
- * @param req - express Request handler Object
- * @param res - express Response Object
+ * Function send to user friendship request
+ * @param {import('express').Request} req - express Request handler Object
+ * @param {import('express').Response} res - express Response Object
+ * @returns
  */
-module.exports.verify = function (req, res) {
-    let code = req.body.code;
-    console.log(session['userPhone'])
-    if (session['userPhone']) {
-        smsSender.verifySMS(session['userPhone'], code).then(_verification => {
-            if (_verification.status == 'approved') {
-                // TODO ?? SESSION
-                res.status(200).end()
-            }
-            else
-            // TODO Destroy the session
-            {
-                console.log('not approved');
-                res.status(406).end();
-
-            }
-        }).catch(_err => {
-
-            console.log(_err.message);
-            // TODO Destroy the session
-            res.status(500).end()
-        })
-    }
-    else {
-        // TODO destroy the session
-
-        console.log('session shit');
-        res.status(403).end()
-    }
+module.exports.sendRequest = async function (req, res) {
+    if (!req.session.uid) { res.redirect('/'); return }
+    // authenticated
+    let sender = req.session.uid
+    let reciever = req.params.reciever
+    if (sender == reciever)
+        res.redirect('/home')
+    await friendshipModel.insertRequest(sender, reciever)
+    res.redirect('/home')
 }
+
 
 
 /**
- * Function to resned SMS to the user for 2FA
- * @param req - express Request handler Object
- * @param res - express Response Object
+ * Function reject user's friendship request
+ * @param {import('express').Request} req - express Request handler Object
+ * @param {import('express').Response} res - express Response Object
  */
-module.exports.resendCode = function (req, res) {
-    console.log(session['userPhone'])
-    if (session['userPhone']) {
-        smsSender.sendSMS(session['userPhone'])
-            .then((_ver) => { res.status(200).end(); console.log('sent') })
-            // TODO destroy the session
-            .catch((_errr) => { res.status(500).end(); console.log('sent') })
-    }
-    else {
-        console.log('session shit');
-        // TODO destroy the session
-        res.status(403).end()
-    }
-
+module.exports.rejectRequest = async function (req, res) {
+    if (!req.session.uid) { res.redirect('/'); return }
+    // authenticated
+    let sender = req.session.uid
+    let reciever = req.params.reciever
+    await friendshipModel.deleteRequest(sender, reciever)
+    res.redirect('/home')
 }
+
+

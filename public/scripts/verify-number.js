@@ -7,10 +7,10 @@ var verifyBtn = document.getElementById('verify-btn');
 function verifyCode() {
     var respond = -1
     document.getElementById('error-block').innerHTML = ""
-    var http = new XMLHttpRequest();
     var url = 'verify-number';
     var params = `code=${input.value}`;
     input.value = ""
+    var http = new XMLHttpRequest();
     http.open('POST', url, true);
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     http.onreadystatechange = function () {

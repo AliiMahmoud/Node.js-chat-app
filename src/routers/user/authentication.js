@@ -1,24 +1,24 @@
 const express = require('express')
-const userController = require('../../controllers/user')
+const loginController = require('../../controllers/login')
 
 const loginRouter = express.Router()
 
-// Login submit
-loginRouter.post("/login", userController.login)
-loginRouter.get("/login", (_req, res) => res.redirect('/'))
+// Login Methods
+loginRouter.post("/login", loginController.login)
+loginRouter.get("/login", (req, res) => req.session.uid ? res.redirect('/home') : res.redirect('/home'))
 
-// Sign-up sumbition
-loginRouter.post("/signup", userController.register)
-loginRouter.get("/signup", (_req, res) => res.redirect('/'))
+// Sign-up Methods
+loginRouter.post("/signup", loginController.register)
+loginRouter.get("/signup", (req, res) => req.session.uid ? res.redirect('/home') : res.redirect('/home'))
 
-loginRouter.post("/verify-number", userController.verify)
+// 2FA code Verification
+loginRouter.post("/verify-number", loginController.verify)
 
 // Re-send 2FA login code 
-loginRouter.get("/resendcode", userController.resendCode)
+loginRouter.get("/resendcode", loginController.resendCode)
 
-// home - after successful login
-loginRouter.get("/home", (_req, res) => res.render('home'))
-
+// User Logout
+loginRouter.get("/logout", loginController.logout)
 
 
 // Exporting the main loginRouter

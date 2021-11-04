@@ -4,14 +4,21 @@ require("dotenv").config();
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
-const errorHandler = require('./src/middlewares/error-handler')
-const router = require('./src/routers/index')
-const morgan = require('morgan')
-const socket = require('socket.io')
-const db = require('./database')
+const errorHandler = require('./src/middlewares/error-handler') // MIDLLEWARE ERROR HANDLER 
+const router = require('./src/routers/index') // ROUTER 
+const socket = require('socket.io')  // SOCKET CONNECTION
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+const db = require('./database') // POSTGRES DATABASE CONNECTION
+const socketsHandler = require("./socketsHandler"); // SOCKET EVENTS HANDLER
 
 // Setting an instance from the app
 const app = express()
+
+// Session Initialization
+app.use(cookieParser());
+const sessionMiddleware = session({ secret: process.env.SESSION_SECRET, saveUninitialized: true, resave: true })
+app.use(sessionMiddleware);
 
 // Setting the view engine 
 app.set('view engine', 'ejs')
@@ -19,7 +26,6 @@ app.set('view engine', 'ejs')
 // Middle-wares 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.json())
-// app.use(morgan('dev'))
 app.use(router);
 
 // Initializing the Project Main Folder 
@@ -30,16 +36,16 @@ db.connect()
 
 // Firing the sever
 port = process.env.PORT || 3000
-const server = app.listen(port, console.log(`Server is running port ${port}`))
+const server = app.listen(process.env.PORT || 3000, console.log(`Server is running port ${port}`))
 
-// Initializing socket 
+/// Initializing the socket 
 var io = socket(server)
+// Middleware session that forwards the request to access session inside the socket request 
+io.use((socket, next) => {
+    sessionMiddleware(socket.request, socket.request.res, next);
+});
 
-// Chat sockets handler
-const chatHandler = require("./chatHandler");
-const onConnection = (socket) => {
-    chatHandler(io, socket);
-}
+const onConnection = (socket) => { socketsHandler(io, socket) }
 // connecting the sockets
 io.on("connection", onConnection);
 
@@ -47,6 +53,3 @@ io.on("connection", onConnection);
 app.use(function (_req, res, _next) { res.render('404') });
 //  Error handler middleware
 app.use(errorHandler)
-
-
-
